@@ -49,20 +49,19 @@
 
   /* ===== SCREENS ===== */
   .screen {
-    display: none;
+    display: none !important;
     min-height: 100vh;
     position: relative;
     z-index: 1;
   }
-  .screen.active { display: block; }
 
   /* ===== PETITION SCREEN ===== */
   #petition {
     padding: 2rem 1rem;
-    display: flex;
     justify-content: center;
     align-items: flex-start;
   }
+  #petition.active { display: flex !important; }
 
   .court-document {
     max-width: 700px;
@@ -311,17 +310,12 @@
 
   /* ===== OBJECTION SCREEN ===== */
   #objection {
-    display: none;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     padding: 2rem;
     background: var(--parchment);
   }
-
-  #objection.active {
-    display: flex;
-  }
+  #objection.active { display: flex !important; }
 
   .objection-card {
     max-width: 550px;
@@ -401,17 +395,12 @@
 
   /* ===== VERDICT (YES) SCREEN ===== */
   #verdict {
-    display: none;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     padding: 2rem;
     background: linear-gradient(135deg, #fff0f3, #fff5f7, #ffeef2);
   }
-
-  #verdict.active {
-    display: flex;
-  }
+  #verdict.active { display: flex !important; }
 
   .verdict-card {
     max-width: 650px;
