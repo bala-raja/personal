@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urgent Legal Notice — Confidential</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f4e8c1;
+    --parchment-dark: #e8d5a3;
+    --ink: #2c1810;
+    --ink-light: #5c3a2e;
+    --red-seal: #8b1a1a;
+    --gold: #b8860b;
+    --gold-light: #daa520;
+    --green-verdict: #1a472a;
+    --rose: #c41e3a;
+    --rose-soft: #e8a0b4;
+    --blush: #fff0f3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== PARCHMENT TEXTURE OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(139,109,63,0.02) 3px,
+        rgba(139,109,63,0.02) 4px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+  .screen.active { display: block; }
+
+  /* ===== PETITION SCREEN ===== */
+  #petition {
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .court-document {
+    max-width: 700px;
+    width: 100%;
+    background: linear-gradient(135deg, #faf3e0, var(--parchment), #f0deb4);
+    border: 3px double var(--ink);
+    padding: 3rem 2.5rem;
+    position: relative;
+    box-shadow:
+      0 0 0 1px var(--gold),
+      0 4px 20px rgba(44,24,16,0.2),
+      inset 0 0 60px rgba(184,134,11,0.05);
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Corner ornaments */
+  .court-document::before,
+  .court-document::after {
+    content: '⚖';
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--gold);
+    opacity: 0.4;
+  }
+  .court-document::before { top: 12px; left: 16px; }
+  .court-document::after { top: 12px; right: 16px; }
+
+  .court-header {
+    text-align: center;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .court-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--red-seal);
+    margin-bottom: 0.3rem;
+  }
+
+  .court-subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+
+  .case-number {
+    font-family: 'Special Elite', monospace;
+    font-size: 0.8rem;
+    color: var(--ink-light);
+    margin-top: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  .parties {
+    text-align: center;
+    margin: 1.5rem 0;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .party-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .party-role {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .vs {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--red-seal);
+    margin: 0.4rem 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--red-seal);
+    margin-top: 1.8rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 0.3rem;
+  }
+
+  .petition-text {
+    font-size: 1.12rem;
+    line-height: 1.85;
+    text-align: justify;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .petition-text .highlight {
+    color: var(--red-seal);
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .article {
+    margin-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .article::before {
+    content: '§';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .prayer-section {
+    background: rgba(139,26,26,0.04);
+    border-left: 3px solid var(--red-seal);
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.8;
+  }
+
+  .seal-area {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--gold);
+  }
+
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--red-seal);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--red-seal);
+    letter-spacing: 1px;
+    transform: rotate(-15deg);
+    opacity: 0.7;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .stamp::after {
+    content: '♥';
+    font-size: 1.5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ===== BUTTONS ===== */
+  .verdict-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    min-height: 80px;
+    position: relative;
+  }
+
+  .btn {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.9rem 2.2rem;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  .btn-yes {
+    background: var(--green-verdict);
+    color: #f4e8c1;
+    border: 2px solid var(--green-verdict);
+    box-shadow: 0 3px 12px rgba(26,71,42,0.3);
+  }
+
+  .btn-yes:hover {
+    background: #245a36;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,71,42,0.4);
+  }
+
+  .btn-no {
+    background: transparent;
+    color: var(--red-seal);
+    border: 2px solid var(--red-seal);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .btn-no:hover {
+    background: var(--red-seal);
+    color: var(--parchment);
+  }
+
+  .btn-no.panicking {
+    font-size: 0.85rem !important;
+    padding: 0.6rem 1.2rem !important;
+  }
+
+  .no-whisper {
+    font-family: 'Special Elite', monospace;
+    font-size: 0.75rem;
+    color: var(--red-seal);
+    opacity: 0;
+    text-align: center;
+    margin-top: 0.5rem;
+    transition: opacity 0.3s;
+    min-height: 1.2rem;
+  }
+
+  .no-whisper.visible { opacity: 0.8; }
+
+  /* ===== OBJECTION SCREEN ===== */
+  #objection {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: var(--parchment);
+  }
+
+  #objection.active {
+    display: flex;
+  }
+
+  .objection-card {
+    max-width: 550px;
+    width: 100%;
+    background: #fff9f0;
+    border: 3px solid var(--red-seal);
+    padding: 3rem 2.5rem;
+    text-align: center;
+    animation: slamDown 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    box-shadow: 0 8px 30px rgba(139,26,26,0.15);
+  }
+
+  @keyframes slamDown {
+    0% { transform: translateY(-40px) scale(1.05); opacity: 0; }
+    60% { transform: translateY(5px) scale(0.98); }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .gavel-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    animation: gavelBang 0.6s ease 0.2s;
+  }
+
+  @keyframes gavelBang {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-20deg); }
+    50% { transform: rotate(10deg); }
+    75% { transform: rotate(-5deg); }
+  }
+
+  .objection-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--red-seal);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .objection-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .objection-ruling {
+    font-family: 'Special Elite', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    border-top: 1px solid var(--gold);
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+
+  .btn-reconsider {
+    font-family: 'Playfair Display', serif;
+    background: var(--red-seal);
+    color: var(--parchment);
+    border: none;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    transition: all 0.3s;
+  }
+
+  .btn-reconsider:hover {
+    background: #a52525;
+    transform: translateY(-1px);
+  }
+
+  /* ===== VERDICT (YES) SCREEN ===== */
+  #verdict {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #fff0f3, #fff5f7, #ffeef2);
+  }
+
+  #verdict.active {
+    display: flex;
+  }
+
+  .verdict-card {
+    max-width: 650px;
+    width: 100%;
+    background: white;
+    border: 2px solid var(--rose-soft);
+    padding: 3rem 2.5rem;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+    box-shadow: 0 8px 40px rgba(196,30,58,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .verdict-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rose-soft), var(--rose), var(--rose-soft));
+  }
+
+  .verdict-badge {
+    display: inline-block;
+    background: var(--rose);
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 0.4rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .verdict-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--rose);
+    margin-bottom: 0.3rem;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+
+  .verdict-subtitle {
+    font-size: 1rem;
+    color: var(--ink-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+
+  .love-message {
+    font-size: 1.2rem;
+    line-height: 2;
+    color: var(--ink);
+    font-style: italic;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--rose-soft);
+    border-bottom: 1px solid var(--rose-soft);
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+  }
+
+  .love-sign {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--rose);
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+  }
+
+  .love-sign span {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    font-weight: 400;
+    margin-top: 0.2rem;
+    font-style: italic;
+  }
+
+  .hearts-footer {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* ===== CONFETTI ===== */
+  .confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    opacity: 0;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+    85% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.5); }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .court-document, .objection-card, .verdict-card {
+      padding: 2rem 1.3rem;
+    }
+    .party-name { font-size: 1.3rem; }
+    .verdict-title { font-size: 1.7rem; }
+    .verdict-buttons { gap: 1.5rem; flex-wrap: wrap; }
+    .btn { padding: 0.8rem 1.6rem; font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SCREEN 1: THE PETITION ===== -->
+<div id="petition" class="screen active">
+  <div class="court-document">
+    <div class="court-header">
+      <div class="court-name">In the Hon'ble Court of Love</div>
+      <div class="court-subtitle">Bench of Eternal Affairs &amp; Matters of the Heart</div>
+      <div class="case-number">Case No. 143/2024 &nbsp;•&nbsp; Petition under Section 14(02) of the Heart Act</div>
+    </div>
+
+    <div class="parties">
+      <div class="party-name">Bala</div>
+      <div class="party-role">— Petitioner —</div>
+      <div class="vs">v.</div>
+      <div class="party-name">Bhavna</div>
+      <div class="party-role">— Respondent (& Counsel for Herself) —</div>
+    </div>
+
+    <div class="section-title">Statement of Facts</div>
+    <div class="petition-text article">
+      That the Petitioner, on or around <span class="highlight">18 months ago</span>, did come into contact with the Respondent, and has since been rendered completely, irreversibly, and hopelessly smitten — a condition for which no appeal is sought.
+    </div>
+    <div class="petition-text article">
+      That the Respondent, being a qualified Advocate, is hereby put on notice that she has been practicing law on the Petitioner's heart <span class="highlight">without prior consent</span>, and the damages are immeasurable (in a good way).
+    </div>
+    <div class="petition-text article">
+      That despite the Respondent already being in lawful romantic association with the Petitioner, the said Petitioner wishes to <span class="highlight">formally re-propose</span> on this auspicious day — because love, much like the law, demands due process.
+    </div>
+
+    <div class="section-title">Prayer</div>
+    <div class="prayer-section">
+      Wherefore, the Petitioner most humbly prays before this Hon'ble Court that the Respondent, <strong>Adv. Bhavna</strong>, may be pleased to accept this proposal and grant the Petitioner the exclusive, non-transferable, lifetime license to love, cherish, and annoy her — in perpetuity, without the possibility of parole.
+    </div>
+
+    <div class="seal-area">
+      <div class="stamp"></div>
+      <div class="case-number">Filed on Propose Day, 2025 — with utmost urgency &amp; sweaty palms</div>
+    </div>
+
+    <div class="verdict-buttons">
+      <button class="btn btn-yes" onclick="showVerdict()">Sustained ❤️</button>
+      <button class="btn btn-no" id="noBtn" onmouseenter="dodgeButton()" onclick="showObjection()">Overruled</button>
+    </div>
+    <div class="no-whisper" id="noWhisper"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2: OBJECTION ===== -->
+<div id="objection" class="screen">
+  <div class="objection-card">
+    <div class="gavel-icon">🔨</div>
+    <div class="objection-title">Objection!</div>
+    <div class="objection-text">
+      This court finds the motion to reject <strong>grossly untenable</strong> and <strong>wholly without merit</strong>.<br><br>
+      Under <em>Section 143 of the Indian Heart Code</em>, no person of sound mind may decline a genuine proposal filed with this much effort and love.<br><br>
+      The motion is hereby <strong>DENIED</strong>.
+    </div>
+    <div class="objection-ruling">
+      Order, order! Case remanded back for reconsideration. The Respondent is directed to re-examine the evidence (the Petitioner's face) and reconsider.
+    </div>
+    <button class="btn-reconsider" onclick="goBack()">Return to Courtroom</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: VERDICT (YES) ===== -->
+<div id="verdict" class="screen">
+  <div class="confetti-container" id="confettiContainer"></div>
+  <div class="verdict-card">
+    <div class="verdict-badge">Final Judgment</div>
+    <div class="verdict-title">Verdict: Love Wins</div>
+    <div class="verdict-subtitle">Pronounced in Open Court on Propose Day</div>
+    <div class="love-message">
+      I count myself as the luckiest man to have found such a pure, kind soul — who also happens to be the most gorgeous and scorching hot woman — 18 months ago. I will continue to ask you out even though you're already mine. Here's to a lifetime of romance that still feels like Year One. ❤️
+    </div>
+    <div class="love-sign">
+      — Bala
+      <span>Your Petitioner, now & forever</span>
+    </div>
+    <div class="hearts-footer">♥ ♥ ♥</div>
+  </div>
+</div>
+
+<script>
+  const noBtn = document.getElementById('noBtn');
+  const noWhisper = document.getElementById('noWhisper');
+  let dodgeCount = 0;
+
+  const whispers = [
+    "The button seems to have filed for relocation...",
+    "Counsel advises against this course of action!",
+    "This button is exercising its right to flee!",
+    "Motion to dodge: GRANTED!",
+    "The defense rests... elsewhere.",
+    "Exhibit A: You can't catch me!",
+    "Order in the court! (But no order for this button)",
+    "This button has retained its own lawyer.",
+    "Bail granted to the No button!",
+    "The jury has left the chat.",
+    "Sustained! ...the button's escape, that is.",
+    "Your Honor, the button pleads the fifth!",
+  ];
+
+  function dodgeButton() {
+    dodgeCount++;
+    const parentRect = noBtn.closest('.verdict-buttons').getBoundingClientRect();
+    const docRect = noBtn.closest('.court-document').getBoundingClientRect();
+
+    // Calculate bounds within the document
+    const maxX = docRect.width - noBtn.offsetWidth - 40;
+    const maxY = 120;
+
+    let newX = Math.random() * maxX - maxX / 2;
+    let newY = Math.random() * maxY - maxY / 2;
+
+    noBtn.style.position = 'relative';
+    noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
+    noBtn.style.zIndex = '10';
+
+    // Show whisper
+    noWhisper.textContent = whispers[dodgeCount % whispers.length];
+    noWhisper.classList.add('visible');
+
+    // Make button smaller after many attempts
+    if (dodgeCount > 5) {
+      noBtn.classList.add('panicking');
+    }
+
+    // After lots of dodges, slow down to let them catch it
+    if (dodgeCount > 12) {
+      setTimeout(() => {
+        noBtn.style.transition = 'transform 0.8s ease';
+      }, 100);
+    }
+  }
+
+  function showObjection() {
+    document.getElementById('petition').classList.remove('active');
+    document.getElementById('objection').classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function goBack() {
+    document.getElementById('objection').classList.remove('active');
+    document.getElementById('petition').classList.add('active');
+    // Reset no button
+    noBtn.style.transform = 'translate(0, 0)';
+    noBtn.style.transition = 'all 0.15s ease';
+    noBtn.classList.remove('panicking');
+    dodgeCount = 0;
+    noWhisper.classList.remove('visible');
+    window.scrollTo(0, 0);
+  }
+
+  function showVerdict() {
+    document.getElementById('petition').classList.remove('active');
+    document.getElementById('verdict').classList.add('active');
+    window.scrollTo(0, 0);
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#c41e3a', '#e8a0b4', '#b8860b', '#ff6b81', '#ffd700', '#ff4757', '#ff9ff3'];
+
+    for (let i = 0; i < 80; i++) {
+      const piece = document.createElement('div');
+      piece.classList.add('confetti-piece');
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      piece.style.animationDelay = (Math.random() * 2) + 's';
+      piece.style.width = (Math.random() * 8 + 6) + 'px';
+      piece.style.height = (Math.random() * 10 + 8) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      container.appendChild(piece);
+    }
+
+    // Second wave
+    setTimeout(() => {
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.classList.add('confetti-piece');
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        piece.style.animationDelay = (Math.random() * 1) + 's';
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 10 + 8) + 'px';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(piece);
+      }
+    }, 1500);
+  }
+
+  // Disable right-click and make it fun
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+  });
+</script>
+
+</body>
+</html>
